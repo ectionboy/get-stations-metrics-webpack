@@ -34,6 +34,12 @@ async function deleteStation(id) {
 function renderDataList(data) {
 	document.getElementById("list").innerHTML = "";
 	const listElement = document.getElementById("list");
+	if (!data) {
+		const listItem = document.createElement("li");
+		listItem.textContent = "Connection error";
+		listElement.appendChild(listItem);
+		return;
+	}
 	data.map((item) => {
 		const listItem = document.createElement("li");
 		listItem.id = "station-" + item.id;
@@ -45,12 +51,14 @@ function renderDataList(data) {
 }
 
 async function displayAllData() {
-	const data = await getAllStations();
-	console.log(data);
-	renderDataList(data);
+	const stations = await getAllStations();
+	renderDataList(stations);
 }
 async function displayMetrics() {
 	const stations = await getAllStations();
+	if (!stations) {
+		return;
+	}
 	stations.map(async (station) => {
 		const metrics = await getStationMetricsById(station.id);
 
